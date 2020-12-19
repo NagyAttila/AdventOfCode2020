@@ -652,4 +652,4 @@ print("Part 1#: ", solve(rules, msgs))
 
 rules['8'] = [['42'],['42','8']]
 rules['11'] = [['42'],['42','11','31']]
-# print("Part 2#: ", solve(rules, msgs))
+# print("Part 2#: ", solve(rules, msgs)) # TODO: Play with this a little bit later
