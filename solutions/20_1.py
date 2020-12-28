@@ -1726,113 +1726,137 @@ Tile 2719:
 ...#...##.
 ###.##..#."""
 
-input_ = """Tile 2311:
-..##.#..#.
-##..#.....
-#...##..#.
-####.#...#
-##.##.###.
-##...#.###
-.#.#.#..##
-..#....#..
-###...#.#.
-..###..###
+# input_ = """Tile 2311:
+# ..##.#..#.
+# ##..#.....
+# #...##..#.
+# ####.#...#
+# ##.##.###.
+# ##...#.###
+# .#.#.#..##
+# ..#....#..
+# ###...#.#.
+# ..###..###
 
-Tile 1951:
-#.##...##.
-#.####...#
-.....#..##
-#...######
-.##.#....#
-.###.#####
-###.##.##.
-.###....#.
-..#.#..#.#
-#...##.#..
+# Tile 1951:
+# #.##...##.
+# #.####...#
+# .....#..##
+# #...######
+# .##.#....#
+# .###.#####
+# ###.##.##.
+# .###....#.
+# ..#.#..#.#
+# #...##.#..
 
-Tile 1171:
-####...##.
-#..##.#..#
-##.#..#.#.
-.###.####.
-..###.####
-.##....##.
-.#...####.
-#.##.####.
-####..#...
-.....##...
+# Tile 1171:
+# ####...##.
+# #..##.#..#
+# ##.#..#.#.
+# .###.####.
+# ..###.####
+# .##....##.
+# .#...####.
+# #.##.####.
+# ####..#...
+# .....##...
 
-Tile 1427:
-###.##.#..
-.#..#.##..
-.#.##.#..#
-#.#.#.##.#
-....#...##
-...##..##.
-...#.#####
-.#.####.#.
-..#..###.#
-..##.#..#.
+# Tile 1427:
+# ###.##.#..
+# .#..#.##..
+# .#.##.#..#
+# #.#.#.##.#
+# ....#...##
+# ...##..##.
+# ...#.#####
+# .#.####.#.
+# ..#..###.#
+# ..##.#..#.
 
-Tile 1489:
-##.#.#....
-..##...#..
-.##..##...
-..#...#...
-#####...#.
-#..#.#.#.#
-...#.#.#..
-##.#...##.
-..##.##.##
-###.##.#..
+# Tile 1489:
+# ##.#.#....
+# ..##...#..
+# .##..##...
+# ..#...#...
+# #####...#.
+# #..#.#.#.#
+# ...#.#.#..
+# ##.#...##.
+# ..##.##.##
+# ###.##.#..
 
-Tile 2473:
-#....####.
-#..#.##...
-#.##..#...
-######.#.#
-.#...#.#.#
-.#########
-.###.#..#.
-########.#
-##...##.#.
-..###.#.#.
+# Tile 2473:
+# #....####.
+# #..#.##...
+# #.##..#...
+# ######.#.#
+# .#...#.#.#
+# .#########
+# .###.#..#.
+# ########.#
+# ##...##.#.
+# ..###.#.#.
 
-Tile 2971:
-..#.#....#
-#...###...
-#.#.###...
-##.##..#..
-.#####..##
-.#..####.#
-#..#.#..#.
-..####.###
-..#.#.###.
-...#.#.#.#
+# Tile 2971:
+# ..#.#....#
+# #...###...
+# #.#.###...
+# ##.##..#..
+# .#####..##
+# .#..####.#
+# #..#.#..#.
+# ..####.###
+# ..#.#.###.
+# ...#.#.#.#
 
-Tile 2729:
-...#.#.#.#
-####.#....
-..#.#.....
-....#..#.#
-.##..##.#.
-.#.####...
-####.#.#..
-##.####...
-##..#.##..
-#.##...##.
+# Tile 2729:
+# ...#.#.#.#
+# ####.#....
+# ..#.#.....
+# ....#..#.#
+# .##..##.#.
+# .#.####...
+# ####.#.#..
+# ##.####...
+# ##..#.##..
+# #.##...##.
 
-Tile 3079:
-#.#.#####.
-.#..######
-..#.......
-######....
-####.#..#.
-.#...#.##.
-#.#####.##
-..#.###...
-..#.......
-..#.###..."""
+# Tile 3079:
+# #.#.#####.
+# .#..######
+# ..#.......
+# ######....
+# ####.#..#.
+# .#...#.##.
+# #.#####.##
+# ..#.###...
+# ..#.......
+# ..#.###..."""
+
+# input_ = """Tile 3079:
+# #.#.#####.
+# .#..######
+# ..#.......
+# ######....
+# ####.#..#.
+# .#...#.##.
+# #.#####.##
+# ..#.###...
+# ..#.......
+# ..#.###...
+
+# Tile 2473:
+# #....####.
+# #..#.##...
+# #.##..#...
+# ######.#.#
+# .#...#.#.#
+# .#########
+# .###.#..#.
+# ########.#
+# ##...##.#.
+# ..###.#.#."""
 
 import re
 import random
@@ -1840,102 +1864,191 @@ from collections import Counter
 
 def solve_1(images):
     def getXEdge(img, edge):
-        return [p for p,_ in filter(lambda x : x[1]==edge, img)]
+        return {p for p,_ in filter(lambda x : x[1]==edge, img)}
 
     def getYEdge(img, edge):
-        return [p for _,p in filter(lambda x : x[0]==edge, img)]
+        return {p for _,p in filter(lambda x : x[0]==edge, img)}
 
-    def flip(xs, MAX):
-        if len(xs) == 0:
-            return []
-        elif len(xs) == 1:
-            return [MAX-xs[0]]
-        return [MAX-xs[-1]] + flip(xs[1:-1],MAX) + [MAX-xs[0]]
+    def flipOverX(img):
+        new_img = []
+        for x,y in img:
+            new_img.append((x,Y-y))
+        return new_img
 
-    def isAdjecent(rk, rv, ik,img):
-        all_img_edges = [getXEdge(img, 0), getXEdge(img, X), getYEdge(img, 0), getYEdge(img, Y),
-                         flip(getXEdge(img, 0),X), flip(getXEdge(img, X),X),
-                         flip(getYEdge(img, 0),Y), flip(getYEdge(img, Y),Y)]
-        rimg = images[rk]
+    def flipOverY(img):
+        new_img = []
+        for x,y in img:
+            new_img.append((X-x,y))
+        return new_img
 
-        if   getXEdge(rimg, X) in all_img_edges:
-            return rv[0]+1, rv[1]
-        elif getXEdge(rimg, 0) in all_img_edges:
-            return rv[0]-1, rv[1]
-        elif getYEdge(rimg, Y) in all_img_edges:
-            return rv[0], rv[1]+1
-        elif getYEdge(rimg, 0) in all_img_edges:
-            return rv[0], rv[1]-1
-        return None, None
+    def rotate_(img):
+        new_img = []
+        for x,y in img:
+            nx,ny = x,y
+            if x==0:
+                nx,ny = X-y,0
+            elif x==X:
+                nx,ny = X-y,Y
+            elif y==0:
+                nx,ny = X,x
+            elif y==Y:
+                nx,ny = 0,x
 
-    leftovers = images.copy()
+            new_img.append((nx,ny))
+        return new_img
 
+    def rotate(img):
+        new_img = []
+        for x,y in img:
+            nx,ny = Y-y,x
+
+            new_img.append((nx,ny))
+        return new_img
+
+    def isAdjecent(rimg, rv, img):
+
+        def isAdjecent_(img_):
+            def testAndAppend(img__):
+
+                x_y0   = getXEdge(img__, 0)
+                x_yMax = getXEdge(img__, Y)
+                y_x0   = getYEdge(img__, 0)
+                y_xMax = getYEdge(img__, X)
+
+                adjecents__ = []
+                if getXEdge(rimg, Y) == x_y0:
+                    adjecents__.append(((rv[0]+1,rv[1]),img__))
+                if getXEdge(rimg, 0) == x_yMax:
+                    adjecents__.append(((rv[0]-1,rv[1]),img__))
+                if getYEdge(rimg, X) == y_x0:
+                    adjecents__.append(((rv[0],rv[1]+1),img__))
+                if getYEdge(rimg, 0) == y_xMax:
+                    adjecents__.append(((rv[0],rv[1]-1),img__))
+                return adjecents__
+
+            adjecents_ = testAndAppend(img_)
+            adjecents_.extend(testAndAppend(flipOverX(img_)))
+            adjecents_.extend(testAndAppend(flipOverY(img_)))
+            return adjecents_
+
+        adjecents = []
+        rotated = img.copy()
+        for _ in range(4):
+            adjecents.extend(isAdjecent_(rotated))
+            rotated = rotate(rotated)
+
+        if adjecents:
+            # print("adjecents:",adjecents)
+            return adjecents
+        return None
+
+    def isInDicts(ds, x):
+        for d in ds:
+            if all([i in list(d.items()) for i in list(x.items())]):
+                return True
+        return False
+
+    def fitsToReassembled(new_segment, reassembled):
+        ik,((x,y),img) = new_segment
+        neighbours = [(x-1,y), (x,y-1), (x+1,y), (x,y+1)]
+        for n in neighbours:
+            for rk,(rpos,rimg) in reassembled.items():
+                if n==rpos :
+                    positions = []
+                    for a,_ in isAdjecent(rimg, rpos, img):
+                        positions.append(a)
+                    if not (x,y) in positions:
+                        return False
+        return True
+
+    def getMinsAndMaxs(reassembled):
+        x_values = sorted(list(reassembled.items()),key=lambda item: item[1][0][0])
+        y_values = sorted(list(reassembled.items()),key=lambda item: item[1][0][1])
+        min_x = x_values[0][1][0][0]
+        min_y = y_values[0][1][0][1]
+        max_x = x_values[-1][1][0][0]
+        max_y = y_values[-1][1][0][1]
+        return min_x,min_y,max_x,max_y
+
+    def isCorrectSize(reassembled):
+        min_x,min_y,max_x,max_y = getMinsAndMaxs(reassembled)
+
+        if (max_x - min_x) > EXPECTED_SIZE or (max_y - min_y) > EXPECTED_SIZE:
+            return False
+        return True
+
+    def solve(leftovers_, reassembled_):
+        print(len(leftovers_), len(reassembled_), len(leftovers_)+len(reassembled_), flush=True)
+        leftovers = leftovers_.copy()
+        reassembled = reassembled_.copy()
+
+        if len(leftovers) == 0:
+            print("LEAF:", reassembled)
+            if not isCorrectSize(reassembled):
+                return None
+
+            min_x,min_y,max_x,max_y = getMinsAndMaxs(reassembled)
+
+            solution = 1
+            for k,((x,y),rimg) in reassembled.items():
+                if (x == min_x and y == min_y) or \
+                   (x == min_x and y == max_y) or \
+                   (x == max_x and y == min_y) or \
+                   (x == max_x and y == max_y) :
+                    solution *= k
+            return solution
+
+        possibles = []
+        for ik,img in leftovers.items():
+            for rk,((x,y),rimg) in reassembled.items():
+                adjecents = isAdjecent(rimg,(x,y),img)
+                if adjecents:
+                    for adj in adjecents:
+                        new_possible = (ik,adj)
+                        if not adj in list(reassembled.values()) and \
+                            not new_possible in possibles and \
+                            fitsToReassembled(new_possible, reassembled) :
+                            # print("add", possibles, "\n", new_possible)
+                            possibles.append(new_possible)
+
+        reassembleds = []
+        for k,v in possibles:
+            new_reassembled = {**reassembled, **{k:v}}
+            if not isCorrectSize(new_reassembled):
+                continue
+
+            if solution := solve({x: leftovers[x] for x in leftovers.keys() - {k}},
+                                 new_reassembled):
+                return solution
+        return None
+
+    EXPECTED_SIZE = len(images)**(1/2) - 1
     X = max([x for _,v in images.items() for x,_ in v])
     Y = max([y for _,v in images.items() for _,y in v])
 
-    reassembled = dict([(next(iter(images)),(0,0))])
-    found = True
-    while found:
-        found = False
-        possible = []
-        for ik,iv in leftovers.items():
-            for rk,rv in reassembled.items():
-                x, y = isAdjecent(rk,rv,ik,iv)
-                if x != None and y != None:
-                    possible.append((ik,(x,y)))
+    key = next(iter(images))
+    value = images[key]
+    reassembled_start = dict([(key,((0,0),value))])
+    solution = solve({x: images[x] for x in images.keys() - {key}}, reassembled_start)
 
-        if possible:
-            best = Counter(possible).most_common(1)[0]
-            k,v = best[0]
-
-            # Remove prev
-            # if v in list(reassembled.values()):
-            #     ri = list(reassembled.values()).index(v)
-            #     rk = list(reassembled.keys())[ri]
-            #     rv = images[rk]
-            #     del reassembled[rk]
-            #     leftovers[rk] = rv
-
-            # Add new
-            reassembled[k] = v
-            del leftovers[k]
-            found = True
-    if leftovers:
-        print("Leftovers: ", leftovers)
-
-    x_values = sorted(reassembled.items(),key=lambda item: item[1][0])
-    y_values = sorted(reassembled.items(),key=lambda item: item[1][1])
-    min_x = x_values[0][1][0]
-    min_y = y_values[0][1][1]
-    max_x = x_values[-1][1][0]
-    max_y = y_values[-1][1][1]
-
-    solution = 1
-    for k,v in reassembled.items():
-        if (v[0] == min_x and v[1] == min_y) or \
-           (v[0] == min_x and v[1] == max_y) or \
-           (v[0] == max_x and v[1] == min_y) or \
-           (v[0] == max_x and v[1] == max_y) :
-            solution *= k
     return solution
 
 images = input_.split('\n\n')
 k = list(map(lambda x : int(re.match('Tile (\d+):',x).group(1)), images))
 v = list(map(lambda x : x.split(':\n')[1], images))
-v = [[[z=='#' for z in y ] for y in x.splitlines()] for x in v]
+v = [[[z=='#' for z in x ] for x in y.splitlines()] for y in v]
 
 ### TODO: save this parser to Utils
 all_parsed = []
 for image in v:
     parsed = []
-    for i,x in enumerate(image):
-        for j,y in enumerate(x):
-            if y:
-                parsed.append((i,j))
+    for i,y in enumerate(image):
+        for j,x in enumerate(y):
+            if x:
+                parsed.append((j,i))
     all_parsed.append(parsed)
 d = dict(zip(k, all_parsed))
 
-### TODO: make it into a recursive function instead
 print("Part #1: ", solve_1(d))
 
 
