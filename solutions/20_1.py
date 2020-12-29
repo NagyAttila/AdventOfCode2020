@@ -1861,6 +1861,7 @@ Tile 2719:
 import re
 import random
 from collections import Counter
+from copy import deepcopy
 
 def solve_1(images):
     def getXEdge(img, edge):
@@ -1869,40 +1870,17 @@ def solve_1(images):
     def getYEdge(img, edge):
         return {p for _,p in filter(lambda x : x[0]==edge, img)}
 
-    def flipOverX(img):
+    def flip(img):
+        # Flip over Y
         new_img = []
         for x,y in img:
-            new_img.append((x,Y-y))
-        return new_img
-
-    def flipOverY(img):
-        new_img = []
-        for x,y in img:
-            new_img.append((X-x,y))
-        return new_img
-
-    def rotate_(img):
-        new_img = []
-        for x,y in img:
-            nx,ny = x,y
-            if x==0:
-                nx,ny = X-y,0
-            elif x==X:
-                nx,ny = X-y,Y
-            elif y==0:
-                nx,ny = X,x
-            elif y==Y:
-                nx,ny = 0,x
-
-            new_img.append((nx,ny))
+            new_img.append((X-x-1,y))
         return new_img
 
     def rotate(img):
         new_img = []
         for x,y in img:
-            nx,ny = Y-y,x
-
-            new_img.append((nx,ny))
+            new_img.append((Y-y-1,x))
         return new_img
 
     def isAdjecent(rimg, rv, img):
@@ -1911,24 +1889,23 @@ def solve_1(images):
             def testAndAppend(img__):
 
                 x_y0   = getXEdge(img__, 0)
-                x_yMax = getXEdge(img__, Y)
+                x_yMax = getXEdge(img__, Y-1)
                 y_x0   = getYEdge(img__, 0)
-                y_xMax = getYEdge(img__, X)
+                y_xMax = getYEdge(img__, X-1)
 
                 adjecents__ = []
-                if getXEdge(rimg, Y) == x_y0:
-                    adjecents__.append(((rv[0]+1,rv[1]),img__))
-                if getXEdge(rimg, 0) == x_yMax:
-                    adjecents__.append(((rv[0]-1,rv[1]),img__))
-                if getYEdge(rimg, X) == y_x0:
+                if getXEdge(rimg, Y-1) == x_y0:
                     adjecents__.append(((rv[0],rv[1]+1),img__))
-                if getYEdge(rimg, 0) == y_xMax:
+                if getXEdge(rimg, 0) == x_yMax:
                     adjecents__.append(((rv[0],rv[1]-1),img__))
+                if getYEdge(rimg, X-1) == y_x0:
+                    adjecents__.append(((rv[0]+1,rv[1]),img__))
+                if getYEdge(rimg, 0) == y_xMax:
+                    adjecents__.append(((rv[0]-1,rv[1]),img__))
                 return adjecents__
 
             adjecents_ = testAndAppend(img_)
-            adjecents_.extend(testAndAppend(flipOverX(img_)))
-            adjecents_.extend(testAndAppend(flipOverY(img_)))
+            adjecents_.extend(testAndAppend(flip(img_)))
             return adjecents_
 
         adjecents = []
@@ -1937,16 +1914,7 @@ def solve_1(images):
             adjecents.extend(isAdjecent_(rotated))
             rotated = rotate(rotated)
 
-        if adjecents:
-            # print("adjecents:",adjecents)
-            return adjecents
-        return None
-
-    def isInDicts(ds, x):
-        for d in ds:
-            if all([i in list(d.items()) for i in list(x.items())]):
-                return True
-        return False
+        return adjecents
 
     def fitsToReassembled(new_segment, reassembled):
         ik,((x,y),img) = new_segment
@@ -1977,15 +1945,54 @@ def solve_1(images):
             return False
         return True
 
+    def printImage(img):
+        for y in range(Y):
+            for x in range(X):
+                if (x,y) in img:
+                    print('#',end='')
+                else:
+                    print('.',end='')
+            print('')
+
+    def printPicture(reassembled):
+        min_x,min_y,max_x,max_y = getMinsAndMaxs(reassembled)
+        border = 1
+
+        picture = [[ '.' for x in range((max_x-min_x+1)*(X-2*border))] for y in range((max_y-min_y+1)*(Y-2*border))]
+
+        for j,row in enumerate(picture):
+            ry = j//(Y-2*border) + min_y
+            iy = j%(Y-2*border) + border
+            for i,_ in enumerate(row):
+                rx = i//(X-2*border) + min_x
+                ix = i%(X-2*border) + border
+                for rk,((x,y),img) in reassembled.items():
+                    if rx == x and ry == y and (ix,iy) in img:
+                        picture[j][i] = '#'
+
+        # Flip to show exactly the example image
+        new_pic = deepcopy(picture)
+        n = len(picture)
+        for i,row in enumerate(picture):
+            for j,_ in enumerate(row):
+                new_pic[i][j] = picture[n-i-1][j]
+        picture = deepcopy(new_pic)
+
+        for y in picture:
+            for x in y:
+                print(x, end='')
+            print('')
+        print('')
+
     def solve(leftovers_, reassembled_):
         print(len(leftovers_), len(reassembled_), len(leftovers_)+len(reassembled_), flush=True)
         leftovers = leftovers_.copy()
         reassembled = reassembled_.copy()
 
         if len(leftovers) == 0:
-            print("LEAF:", reassembled)
             if not isCorrectSize(reassembled):
                 return None
+            printPicture(reassembled)
 
             min_x,min_y,max_x,max_y = getMinsAndMaxs(reassembled)
 
@@ -2008,7 +2015,6 @@ def solve_1(images):
                         if not adj in list(reassembled.values()) and \
                             not new_possible in possibles and \
                             fitsToReassembled(new_possible, reassembled) :
-                            # print("add", possibles, "\n", new_possible)
                             possibles.append(new_possible)
 
         reassembleds = []
@@ -2016,6 +2022,7 @@ def solve_1(images):
             new_reassembled = {**reassembled, **{k:v}}
             if not isCorrectSize(new_reassembled):
                 continue
+            # printPicture(reassembled)
 
             if solution := solve({x: leftovers[x] for x in leftovers.keys() - {k}},
                                  new_reassembled):
@@ -2023,8 +2030,8 @@ def solve_1(images):
         return None
 
     EXPECTED_SIZE = len(images)**(1/2) - 1
-    X = max([x for _,v in images.items() for x,_ in v])
-    Y = max([y for _,v in images.items() for _,y in v])
+    X = max([x for _,v in images.items() for x,_ in v]) + 1
+    Y = max([y for _,v in images.items() for _,y in v]) + 1
 
     key = next(iter(images))
     value = images[key]
